@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Game</title>
+</head>
+<style>
+    body {
+        background-image: url("bg.png");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        margin: 0
+    }
+
+    .hero {
+        position: relative;;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    h1 {
+        color: #df9903;
+        text-transform: uppercase;
+        text-align: center;
+        font-size: 70px;
+        letter-spacing: 0.1em;
+        text-shadow: 0 0 10px rgba(219, 176, 5, 0.8);
+    }
+
+    h2 {
+        text-align: center;
+        letter-spacing: 0.1em;
+        color: #a87505;
+        font-size: 20px;
+        text-transform: uppercase;
+    }
+
+    button {
+        margin-top: 70px;
+        padding: 12px 35px;
+        font-size: 20px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        background: #d39b13;
+        color: white;
+        transition: all .3s ease;
+    }
+
+    button:hover{
+        transform:translateY(-2px) scale(1.05);
+    }
+    .particles span{
+        position:absolute;
+        width:6px;
+        height:6px;
+        background:#fff;
+        border-radius:50%;
+        box-shadow:0 0 10px #c084fc;
+        animation: float 7s linear infinite;
+    }
+
+    .particles span:nth-child(1){ left:10%; top:80%;}
+    .particles span:nth-child(2){ left:20%; top:40%;}
+    .particles span:nth-child(3){ left:30%; top:90%;}
+    .particles span:nth-child(4){ left:40%; top:70%;}
+    .particles span:nth-child(5){ left:50%; top:60%;}
+    .particles span:nth-child(6){ left:60%; top:30%;}
+    .particles span:nth-child(7){ left:70%; top:60%;}
+    .particles span:nth-child(8){ left:80%; top:80%;}
+    .particles span:nth-child(9){ left:90%; top:50%;}
+    .particles span:nth-child(10){ left:95%; top:85%;}
+
+    @keyframes float{
+        0%{ 
+            transform:translateY(0); 
+            opacity:0; 
+        
+        }
+
+        20%{
+             opacity:1; 
+        }
+
+        100%{
+             transform:translateY(-370px); 
+             opacity:0.3; 
+        }
+    }
+</style>
+
+<body>
+    <div class="hero">
+
+        <h1>memory card</h1>
+        <h2>Test your memory and discover the hidden magical pairs.</h2>
+
+        <button>Play</button>
+        <div class="particles">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</body>
+
+</html>
