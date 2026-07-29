@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Game</title>
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css">
 </head>
 <style>
     body {
-        background-image: url("bg.png");
+        background-image: url("screenshots/bg.png");
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -44,18 +45,24 @@
     button {
         margin-top: 70px;
         padding: 12px 35px;
-        font-size: 20px;
         border: none;
         border-radius: 30px;
         cursor: pointer;
         background: #d39b13;
-        color: white;
         transition: all .3s ease;
     }
 
     button:hover{
         transform:translateY(-2px) scale(1.05);
     }
+
+    button a{
+        text-decoration: none;
+        color: #fff;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
     .particles span{
         position:absolute;
         width:6px;
@@ -101,7 +108,7 @@
         <h1>memory card</h1>
         <h2>Test your memory and discover the hidden magical pairs.</h2>
 
-        <button>Play</button>
+        <button><a href="card.html">Play</a></button>
         <div class="particles">
             <span></span>
             <span></span>
