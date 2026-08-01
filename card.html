@@ -6,17 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        *{
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             background: #a06f06;
-            
+
         }
 
-        .container{
+        .container {
             text-align: center;
             background: #b3780c;
             padding: 25px;
@@ -26,14 +27,153 @@
             height: 200px;
             box-shadow: 0 0 0 #aa7e05;
         }
+
+        .card-game {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card-front {
+            position: absolute;
+            inset: 0;
+            height: 80px;
+            width: 80px;
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            box-shadow: 0 0 0 2px #754d02;
+            border-radius: 20px;
+        }
+
+        .card {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .card-front img {
+            height: 70px;
+            width: 70px;
+        }
+
+        .tile {
+            background-image: url("screenshots/img-13.png");
+            background-size: 70px 70px;
+            transition: 2s;
+        }
+
+        .card-back {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            inset: 0;
+            transition: 3s;
+        }
+
+        .card-back img {
+            height: 70px;
+            width: 70px;
+            padding: 10px;
+            display: block;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <h1>memory game</h1>
+
+        <div class="card-game" id="card-game">
+            <div class="card" id="card">
+                <div class="card-front" id="card-front"></div>
+            </div>
+        </div>
+
         <button>reset</button>
     </div>
 </body>
+<script>
+    let images = [
+        'screenshots/img-1',
+        'screenshots/img-2',
+        'screenshots/img-3',
+        'screenshots/img-4',
+        'screenshots/img-5',
+        'screenshots/img-6',
+        'screenshots/img-7',
+        'screenshots/img-8',
+        'screenshots/img-9',
+        'screenshots/img-10',
+        'screenshots/img-11',
+        'screenshots/img-12'
+    ];
+
+    const card = document.getElementById("card");
+    const front = document.getElementById("card-front");
+    const rows = 8;
+    const cols = 8;
+
+    for (let y = 0; y < rows; y++) {
+
+        for (let x = 0; x < cols; x++) {
+
+            const tile = document.createElement("div");
+            tile.className = "tile";
+
+            tile.style.backgroundPosition =
+                `${-(x * 70 / cols)}px ${-(y * 70 / rows)}px`;
+
+            front.appendChild(tile);
+
+        }
+
+    }
+
+
+    const cardBack = document.createElement("div");
+    cardBack.className = "card-back";
+
+    cardBack.innerHTML = `<img src="${images[2]}.png" alt="flipped-img">`;
+    card.appendChild(cardBack);
+
+
+
+    document.getElementById("card").onclick = () => {
+        const tiles = document.querySelectorAll(".tile");
+        const flipSound = new Audio("audio.mp3");
+
+        let maxDelay = 0;
+        tiles.forEach(tile => {
+
+            const delay = Math.random() * 500;
+
+            if (delay > maxDelay) {
+                maxDelay = delay;
+            }
+            setTimeout(() => {
+
+                tile.style.opacity = 0;
+                flipSound.currentTime = 0; 
+                flipSound.play();
+                tile.style.transform =
+                    `scale(0) rotate(${Math.random() * 360}deg)`;
+
+            }, delay);
+
+        });
+
+        setTimeout(() => {
+            cardBack.style.opacity = 1;
+        }, maxDelay + 300);
+    };
+
+
+
+</script>
 
 </html>
