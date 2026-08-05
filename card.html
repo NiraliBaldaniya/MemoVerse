@@ -5,41 +5,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --card-size: 120px;
         }
 
         body {
             background: #a06f06;
-
         }
 
         .container {
             text-align: center;
-            background: #b3780c;
+            background: transparent;
             padding: 25px;
             border-radius: 25px;
-            margin: 300px 0 30px 250px;
-            width: 700px;
-            height: 200px;
+            margin: 50px auto;
+            width: fit-content;
+            height: 300px;
             box-shadow: 0 0 0 #aa7e05;
+        }
+
+        h1 {
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        p {
+            font-family: "Cinzel", serif;
+            font-weight: bold;
+            color: #ebbf85;
+            font-size: 20px;
         }
 
         .card-game {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            grid-template-columns: repeat(4, var(--card-size));
+            justify-content: center;
+            gap: 30px;
             margin-bottom: 25px;
         }
 
         .card-front {
             position: absolute;
+            box-sizing: border-box;
             inset: 0;
-            height: 80px;
-            width: 80px;
             padding: 10px;
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -49,19 +59,14 @@
         }
 
         .card {
-            width: 80px;
-            height: 80px;
+            width: var(--card-size);
+            height: var(--card-size);
             position: relative;
-        }
-
-        .card-front img {
-            height: 70px;
-            width: 70px;
         }
 
         .tile {
             background-image: url("screenshots/img-9.png");
-            background-size: 70px 70px;
+            background-size: var(--card-size) var(--card-size);
             transition: 2s;
         }
 
@@ -76,10 +81,32 @@
         }
 
         .card-back img {
-            height: 70px;
-            width: 70px;
-            padding: 10px;
-            display: block;
+            width: calc(var(--card-size) - 30px);
+            height: calc(var(--card-size) - 30px);
+            object-fit: cover;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .card-front,
+        .card-back {
+            width: var(--card-size);
+            height: var(--card-size)
+        }
+
+        .reset {
+            width: 300px;
+            height: 50px;
+            background: #925806;
+            color: #dba256;
+            font-size: 25px;
+            font-family: "Cinzel", serif;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -87,10 +114,11 @@
 <body>
     <div class="container">
         <h1>memory game</h1>
+        <p>Wave Your Wand to Reveal the Hidden Cards!</p>
 
         <div class="card-game" id="card-game"></div>
 
-        <button>reset</button>
+        <button class="reset">reset</button>
     </div>
 </body>
 <script>
@@ -108,56 +136,115 @@
     const game = document.getElementById("card-game");
     const rows = 8;
     const cols = 8;
+    const cardSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--card-size"));
+    const resetBtn = document.querySelector(".reset");
 
-    let cardimages = images.concat(images);
+    function startgame() {
+        
+        game.innerHTML = "";
 
-    cardimages.sort(() => 
-        Math.random() - 0.5
-    );
+        let firstcard = null;
+        let secondcard = null;
+        let shouldFlip = false;
+        let matchedCards = [];
+        let cardimages = images.concat(images);
 
-    for (let i = 0; i < cardimages.length; i++) {
+        cardimages.sort(() =>
+            Math.random() - 0.5
+        );
 
-        const card = document.createElement("div");
-        card.className = "card";
+        for (let i = 0; i < cardimages.length; i++) {
 
-        // Front
-        const front = document.createElement("div");
-        front.className = "card-front";
+            const card = document.createElement("div");
+            card.className = "card";
 
-        // Back
-        const back = document.createElement("div");
-        back.className = "card-back";
+            // Front
+            const front = document.createElement("div");
+            front.className = "card-front";
 
-        back.innerHTML = `<img src="${cardimages[i]}.png">`;
+            // Back
+            const back = document.createElement("div");
+            back.className = "card-back";
 
+            back.innerHTML = `<img src="${cardimages[i]}.png">`;
 
-        for (let y = 0; y < rows; y++) {
+            card.dataset.image = cardimages[i];
 
-            for (let x = 0; x < cols; x++) {
+            for (let y = 0; y < rows; y++) {
 
-                const tile = document.createElement("div");
-                tile.className = "tile";
+                for (let x = 0; x < cols; x++) {
 
-                tile.style.backgroundPosition =
-                    `${-(x * 70 / cols)}px ${-(y * 70 / rows)}px`;
+                    const tile = document.createElement("div");
+                    tile.className = "tile";
 
-                front.appendChild(tile);
+                    tile.style.backgroundPosition =
+                        `${-(x * cardSize / cols)}px ${-(y * cardSize / rows)}px`;
+
+                    front.appendChild(tile);
+
+                }
 
             }
 
-        }
-
-        card.appendChild(front);
-        card.appendChild(back);
+            card.appendChild(front);
+            card.appendChild(back);
         card.onclick = () => {
 
-            const tiles = card.querySelectorAll(".tile");
-
-            const flipSound = new Audio("audio.mp3");
+            let tiles = card.querySelectorAll(".tile");
             let maxDelay = 0;
+            let flipSound = new Audio("audio.mp3");
+
+            if (matchedCards.includes(card) || card === firstcard) {
+                return;
+            }
 
             flipSound.currentTime = 0;
             flipSound.play();
+
+            if (firstcard === null) {
+                firstcard = card;
+            }
+            else if (secondcard === null && card !== firstcard) {
+                secondcard = card;
+            }
+
+            if (secondcard !== null) {
+
+                let firstTiles = firstcard.querySelectorAll(".tile");
+                let secondTiles = secondcard.querySelectorAll(".tile");
+                let firstBack = firstcard.querySelector(".card-back");
+                let secondBack = secondcard.querySelector(".card-back");
+
+                if (firstcard.dataset.image === secondcard.dataset.image) {
+                    matchedCards.push(firstcard);
+                    matchedCards.push(secondcard);
+
+                    firstcard = null;
+                    secondcard = null;
+                    shouldFlip = false;
+                }
+
+                else {
+                    firstcard = null;
+                    secondcard = null;
+                    shouldFlip = true;
+                }
+                if (shouldFlip) {
+                    setTimeout(() => {
+                        firstBack.style.opacity = 0;
+                        secondBack.style.opacity = 0;
+                        firstTiles.forEach(tile => {
+                            tile.style.opacity = 1;
+                            tile.style.transform = "scale(1) rotate(0deg)";
+                        });
+
+                        secondTiles.forEach(tile => {
+                            tile.style.opacity = 1;
+                            tile.style.transform = "scale(1) rotate(0deg)";
+                        });
+                    }, 1500);
+                }
+            }
 
             tiles.forEach(tile => {
 
@@ -182,7 +269,14 @@
         };
 
         game.appendChild(card);
+    }
+  } 
+  startgame();
+
+    resetBtn.onclick = () => {
+        startgame();
     };
+
 
 </script>
 
